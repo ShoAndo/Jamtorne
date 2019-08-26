@@ -7,5 +7,6 @@ target 'Jamtorne' do
 
   # Pods for Jamtorne
 	pod "LiquidFloatingActionButton"
-	
+	pod 'Firebase/Analytics'
+	pod 'Firebase/Firestore’
 end
