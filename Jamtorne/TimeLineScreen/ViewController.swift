@@ -8,6 +8,7 @@
 
 import UIKit
 import StoreKit
+import Floaty
 
 class ViewController: UIViewController {
 
@@ -27,40 +28,20 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.tintColor = .white
         title = "Jamtorne"
         
-       
-        // [1] ミュージックライブラリへのアクセス許可を要求する
-        SKCloudServiceController.requestAuthorization { (status) in
-            if status != .authorized { return }
-            
-            // [2] 利用可能な機能を確認する
-            // 以下を満たす場合、SKCloudServiceSetupViewController を使用できる
-            //     .musicCatalogSubscriptionEligible が含まれている
-            //     .musicCatalogPlayback が含まれていない
-            self.cloudServiceController.requestCapabilities { (capability, error) in
-                if capability.contains(.musicCatalogSubscriptionEligible) &&
-                    !capability.contains(.musicCatalogPlayback) {
-                    print("you can use SKCloudServiceSetupViewController")
-                }
-            }
-        }
+        createButton()
         
-        let controller = SKCloudServiceSetupViewController()
-        
-        // ビューをロードする
-        // options に action キーと値 subscribe を指定
-        controller.load(options: [.action : SKCloudServiceSetupAction.subscribe],
-                        completionHandler: { (result, error) in
-                            // ...
-        })
-        
-        present(controller,
-                animated: true,
-                completion: nil)
     }
     
-        
+    private func createButton(){
+        let floaty = Floaty()
+        floaty.addItem("post", icon: UIImage(named: "posticon2")!, handler: {item in
+            self.performSegue(withIdentifier: "toNewPost", sender: nil)
+        })
+        self.view.addSubview(floaty)
         
     }
+    
+}
 
 
 

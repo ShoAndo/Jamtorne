@@ -6,7 +6,7 @@ target 'Jamtorne' do
   use_frameworks!
 
   # Pods for Jamtorne
-	pod "LiquidFloatingActionButton"
+	pod 'Floaty', '~> 4.2.0'
 	pod 'Firebase/Analytics'
 	pod 'Firebase/Firestore’
 end
