@@ -22,12 +22,12 @@ class SearchViewController: UIViewController {
         title = "検索"
         tableView.delegate = self
         tableView.dataSource = self
-
         prepare()
+        
         
     }
     func prepare() {
-       
+        title = "Search"
         tableView.tableFooterView = UIView()
         
         let search = UISearchController(searchResultsController: nil)
@@ -47,6 +47,8 @@ class SearchViewController: UIViewController {
 }
 
 extension SearchViewController: UITableViewDelegate, UITableViewDataSource{
+    
+  
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let albums = albums else { return 0 }
         return albums.count
@@ -73,13 +75,18 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource{
         let album = albums![indexPath.row]
         let vc = storyboard?.instantiateViewController(withIdentifier: "AlbumViewController") as! AlbumViewController
         vc.albumID = album.id
-        navigationController?.pushViewController(vc, animated: true)
+        print(album.id)
+       self.present(vc, animated: true, completion: nil)
+        performSegue(withIdentifier: "AlbumViewController", sender: album.id)
+        
     }
+    
     
     
 }
 
-extension SearchViewController: UISearchResultsUpdating{
+extension SearchViewController: UISearchResultsUpdating {
+    
     func updateSearchResults(for searchController: UISearchController) {
         if let text = searchController.searchBar.text,
             text.count > 0 {
@@ -87,6 +94,7 @@ extension SearchViewController: UISearchResultsUpdating{
                 DispatchQueue.main.async {
                     self.albums = searchResult?.albums
                     self.tableView.reloadData()
+                  
                 }
             }
         } else {
@@ -94,6 +102,4 @@ extension SearchViewController: UISearchResultsUpdating{
             tableView.reloadData()
         }
     }
-    
-  
 }

@@ -10,12 +10,15 @@ import UIKit
 import StoreKit
 import Floaty
 
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
     var post = Post.allPosts
     let cloudServiceController = SKCloudServiceController()
+    
+   
     
     
     override func viewDidLoad() {
@@ -41,10 +44,14 @@ class ViewController: UIViewController {
         
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toComment"{
+            let vc = segue.destination as! CommentViewController
+            vc.post = sender as? Post
+        }
+    }
+    
 }
-
-
-
 
 extension ViewController:UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -55,14 +62,14 @@ extension ViewController:UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as! PostTableTableViewCell
         cell.post = post[indexPath.row]
-        
-        
+        cell.delegate = self
         return cell
     }
-    
+}
 
-    
-    
-    
+extension ViewController: PostTableTableViewCellDelegate{
+    func didClickCommentButton(post: Post) {
+        self.performSegue(withIdentifier: "toComment", sender: post)
+    }
 }
 

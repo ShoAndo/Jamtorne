@@ -23,7 +23,8 @@ class APIClient {
         return cache
     }()
     
-    static let developerToken = "b'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjNKREg5UlZNRFUifQ.eyJpc3MiOiJSMzNMOU43VUNEIiwiZXhwIjoxNTY3MTE4MTAwLCJpYXQiOjE1NjcwNzQ5MDB9.lomxQM00MgOCUfNxppbAbIVP2bAoKHl3iXanZrr2YXw'"
+    static let developerToken =  "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiIsImtpZCI6IjNKREg5UlZNRFUifQ.eyJpc3MiOiJSMzNMOU43VUNEIiwiZXhwIjoxNTY3NjU3MDMzLCJhdWQiOiJhcHBzdG9yZWNvbm5lY3QtdjEifQ.hBKiNjv1WEudLXp7b9o2TSuJNweWu1RHMgUNzEA69MGzRRQhz2v-1P3W9CVK7B62DXXOJKFBlA-S3Ui7hWxC1A"
+    
     static let countryCode = "jp"
     
     func search(term: String, completion: @escaping (SearchResult?) -> Swift.Void) {
@@ -34,19 +35,21 @@ class APIClient {
         }
         
         guard var components = URLComponents(string: "https://api.music.apple.com/v1/catalog/\(APIClient.countryCode)/search") else { return }
-        let expectedTerms = term.replacingOccurrences(of: " ", with: "+")
+        let expectedTerms = term.replacingOccurrences(of: "", with: "+")
         let urlParameters = ["term": expectedTerms,
-                             "limit": "40",
-                             "types": "albums"]
+                             "limit": "10",
+                             "types": "artists,albums"]
         var queryItems = [URLQueryItem]()
         for (key, value) in urlParameters {
             queryItems.append(URLQueryItem(name: key, value: value))
         }
         components.queryItems = queryItems
         
+        print(components.url!)
+        
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.addValue("Bearer \(APIClient.developerToken)",
+        request.setValue("Bearer \(APIClient.developerToken)",
             forHTTPHeaderField: "Authorization")
         
         data(with: request) { data, error -> Void in
@@ -97,6 +100,7 @@ class APIClient {
                     return
             }
             completionOnMain(album)
+            print(album)
         }
     }
     

@@ -1,21 +1,15 @@
 //
-//  PostTableTableViewCell.swift
+//  PostInCommentTableViewCell.swift
 //  Jamtorne
 //
-//  Created by 安藤奨 on 2019/08/21.
+//  Created by 安藤奨 on 2019/09/04.
 //  Copyright © 2019 安藤奨. All rights reserved.
 //
 
 import UIKit
 
-protocol PostTableTableViewCellDelegate {
-    func didClickCommentButton(post: Post)
-}
+class PostInCommentTableViewCell: UITableViewCell {
 
-
-class PostTableTableViewCell: UITableViewCell {
-    
-    
     @IBOutlet weak var userProfileImage: UIImageView!
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var createdAt: UILabel!
@@ -24,11 +18,7 @@ class PostTableTableViewCell: UITableViewCell {
     @IBOutlet weak var songName: UILabel!
     @IBOutlet weak var postText: UILabel!
     @IBOutlet weak var likeButton: UIButton!
-    @IBOutlet weak var commentButton: UIButton!
-    
     private var currentUserDidLike: Bool = false
-    
-    var delegate: PostTableTableViewCellDelegate!
     
     var post: Post!{
         didSet{
@@ -36,12 +26,8 @@ class PostTableTableViewCell: UITableViewCell {
         }
     }
     
-    private func updateUI(){
-        userProfileImage.layer.cornerRadius = userProfileImage.layer.bounds.width/2
-        musicImage.layer.cornerRadius = 5.0
-//        画像の変更を許可
-        userProfileImage.clipsToBounds = true
-        musicImage.clipsToBounds = true
+    
+    func updateUI(){
         
         userProfileImage.image! = post.user.profileImage
         userName.text! = post.user.fullName
@@ -50,8 +36,22 @@ class PostTableTableViewCell: UITableViewCell {
         artistName.text! = post.artistName
         songName.text! = post.songName
         postText.text! = post.postText
+        
         likeButton.setTitle("\(post.numberOfLikes)いいね!", for: .normal)
+        
         changeLikeButtonColor()
+    }
+    override func layoutSubviews() {
+        userProfileImage.layer.cornerRadius = userProfileImage.layer.bounds.width/2
+        userProfileImage.clipsToBounds = true
+    }
+    
+    private func changeLikeButtonColor(){
+        if currentUserDidLike{
+            likeButton.tintColor = .red
+        }else{
+            likeButton.tintColor = .lightGray
+        }
     }
     
     override func awakeFromNib() {
@@ -64,16 +64,9 @@ class PostTableTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
-    private func changeLikeButtonColor(){
-        if currentUserDidLike{
-            likeButton.tintColor = .red
-        }else{
-            likeButton.tintColor = .lightGray
-        }
-    }
     
-    @IBAction func didClickLikeButton(_ sender: UIButton) {
+    @IBAction func didClickLikeButton(_ sender: Any) {
+        
         currentUserDidLike = post.userDidLike
         if currentUserDidLike{
             post.numberOfLikes += 1
@@ -83,12 +76,6 @@ class PostTableTableViewCell: UITableViewCell {
         likeButton.setTitle("\(post.numberOfLikes)いいね!", for: .normal)
         changeLikeButtonColor()
         post.userDidLike = !post.userDidLike
-        
-    }
-    @IBAction func didClickCommentButton(_ sender: Any) {
-        
-        delegate?.didClickCommentButton(post: post)
-        
         
     }
 }
